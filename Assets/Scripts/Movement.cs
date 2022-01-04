@@ -72,6 +72,8 @@ public class Movement : MonoBehaviour
             rigidbody.velocity = Vector3.zero;
             Debug.Log("durdu");
             isFinish = false;
+            gameManager.isLevelComplate = true;
+            wood.GoldCalculator();
         }
     }
 }

@@ -4033,6 +4033,7 @@ MonoBehaviour:
   - {fileID: 941474710}
   woodScore: {fileID: 594799539}
   goldParticle: {fileID: 7205181255783815940, guid: fcbf37f73156a674491508bb959aaa18, type: 3}
+  GoldMultiplier: 5
 --- !u!65 &563877055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7383,7 +7384,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1422300725}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ArrowUpgradeButton
+        m_MethodName: WoodUpgradeButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

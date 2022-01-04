@@ -11,8 +11,8 @@ public class Wood : MonoBehaviour
     GameManager gameManager;
     [SerializeField] TextMeshPro woodScore;
     [SerializeField] GameObject goldParticle;
+    [SerializeField] int GoldMultiplier = 5;
 
-    
 
     private void Awake()
     {
@@ -38,10 +38,9 @@ public class Wood : MonoBehaviour
             switch (multiplier.multiplierOperation)
             {
                 case '+':
-
                     for (int i = currentWoods; i < currentWoods + multiplier.multiplierValue; i++)
                     {
-                        if (i < 100)
+                        if (i < Woods.Count)
                         {
                             Woods[i].SetActive(true);
                         }
@@ -52,7 +51,7 @@ public class Wood : MonoBehaviour
 
                     for (int i = currentWoods; i > currentWoods - multiplier.multiplierValue; i--)
                     {
-                        if (i <= 100 && i > 0)
+                        if (i <= Woods.Count && i > 0)
                         {
                             Woods[i].SetActive(false);
                         }
@@ -62,7 +61,7 @@ public class Wood : MonoBehaviour
                 case '*':
                     for (int i = currentWoods; i < currentWoods * multiplier.multiplierValue; i++)
                     {
-                        if (i < 100)
+                        if (i < Woods.Count)
                         {
                             Woods[i].SetActive(true);
                         }
@@ -72,7 +71,7 @@ public class Wood : MonoBehaviour
                 case '/':
                     for (int i = currentWoods; i > currentWoods / multiplier.multiplierValue; i--)
                     {
-                        if (i <= 100 && i > 0)
+                        if (i <= Woods.Count && i > 0)
                         {
                             Woods[i].SetActive(false);
                         }
@@ -86,49 +85,54 @@ public class Wood : MonoBehaviour
             multiplier.isAvailable = false;
         }
 
-        else if (other.CompareTag("enemy") && enemyManager.isAvaible && currentWoods > 0)
-        {
-            Instantiate(goldParticle, new Vector3(other.transform.position.x, other.transform.position.y,
-            other.transform.position.z), Quaternion.identity);
+        //else if (other.CompareTag("enemy") && enemyManager.isAvaible && currentWoods > 0)
+        //{
+        //    Instantiate(goldParticle, new Vector3(other.transform.position.x, other.transform.position.y,
+        //    other.transform.position.z), Quaternion.identity);
 
-            gameManager.coinAudio.Play();
+        //    gameManager.coinAudio.Play();
 
-            currentWoods -= enemyManager.health;
-            gameManager.Gold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
-            gameManager.endLevelGold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
-            Destroy(other.gameObject);
-        }
-        else if (other.CompareTag("lastEnemy") && enemyManager.isAvaible && currentWoods > 0)
-        {
-            Instantiate(goldParticle, new Vector3(other.transform.position.x, other.transform.position.y,
-            other.transform.position.z), Quaternion.identity);
+        //    currentWoods -= enemyManager.health;
+        //    gameManager.Gold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
+        //    gameManager.endLevelGold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
+        //    Destroy(other.gameObject);
+        //}
+        //else if (other.CompareTag("lastEnemy") && enemyManager.isAvaible && currentWoods > 0)
+        //{
+        //    Instantiate(goldParticle, new Vector3(other.transform.position.x, other.transform.position.y,
+        //    other.transform.position.z), Quaternion.identity);
 
-            gameManager.coinAudio.Play();
+        //    gameManager.coinAudio.Play();
 
-            currentWoods -= enemyManager.health;
-            gameManager.Gold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
-            gameManager.endLevelGold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
-            Destroy(other.gameObject);
-            Invoke("WaitLevelCompleted", 0.4f);
-        }
+        //    currentWoods -= enemyManager.health;
+        //    gameManager.Gold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
+        //    gameManager.endLevelGold += (int)(enemyManager.gold * gameManager.ýncomeMultiplier);
+        //    Destroy(other.gameObject);
+        //    Invoke("WaitLevelCompleted", 0.4f);
+        //}
     }
     
     public void BuildBridge()
     {
         Debug.Log(currentWoods);
-
+        int activeBridgeWood = 0;
         for (int i = 0; i < currentWoods; i++)
         {
-            bridgeWoods[i].SetActive(true);           
+            
+            if (i<bridgeWoods.Count-1)
+            {
+                bridgeWoods[i].SetActive(true);
+                activeBridgeWood++;
+            }              
         }
-        bridgeWoods[currentWoods-1].tag = "lastWood";
+        bridgeWoods[activeBridgeWood-1].tag = "lastWood";
     }
 
     public void UpgradeWood()
     {
         for (int i = 0; i < gameManager.woodLevel; i++)
         {
-            if (i < 100)
+            if (i < Woods.Count)
             {
                 Woods[i].SetActive(true);
                 currentWoods = gameManager.woodLevel;
@@ -136,6 +140,11 @@ public class Wood : MonoBehaviour
         }
     }
 
+    public void GoldCalculator() { 
+    
+        gameManager.endLevelGold = (int)(currentWoods*GoldMultiplier*gameManager.ýncomeMultiplier);
+        gameManager.Gold += gameManager.endLevelGold;
+    }
     void WaitLevelCompleted()
     {
         gameManager.isLevelComplate = true;
